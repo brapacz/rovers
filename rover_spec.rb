@@ -168,10 +168,29 @@ describe Rover do
   let(:height)      { 5 }
   let(:platenau)    { Rover::Platenau.new(width, height) }
   let(:is_included) { true }
-  let(:path)        { 'LML' }
+  let(:path)        { 'LMLRL' }
+
+  its(:where) { is_expected.to be_eql "#{position.x} #{position.y} #{position.direction}" }
 
   describe '#move' do
     before { rover.move }
-    its(:where) { is_expected.to be_eql "#{start_x-1} #{start_y} S" }
+
+    context 'when robot start on 1 2 N and path is LMLMLMLMM' do
+      let(:path)      { 'LMLMLMLMM' }
+      let(:start_x)   { 1 }
+      let(:start_y)   { 2 }
+      let(:start_dir) { 'N' }
+
+      its(:where) { is_expected.to be_eql '1 3 N' }
+    end
+
+    context 'when robot start on 3 3 E and path is MMRMMRMRRM' do
+      let(:path)      { 'MMRMMRMRRM' }
+      let(:start_x)   { 3 }
+      let(:start_y)   { 3 }
+      let(:start_dir) { 'E' }
+
+      its(:where) { is_expected.to be_eql '5 1 E' }
+    end
   end
 end
