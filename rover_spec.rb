@@ -88,7 +88,32 @@ describe Rover::Position do
       its(:direction) { is_expected.to be_eql 'N' }
     end
   end
-
 end
 
+describe Rover::Platenau do
+  subject { platenau }
 
+  let(:start_width)  { 5 }
+  let(:start_height) { 5 }
+  let(:platenau)     { described_class.new(start_width, start_height)}
+
+  describe '#include?' do
+    it { is_expected.to be_include position(1, 1) }
+    it { is_expected.to be_include position(start_width-1, start_height-1) }
+
+    it { is_expected.to_not be_include position(start_width, start_height) }
+    it { is_expected.to_not be_include position(start_width+1,start_height+1) }
+    it { is_expected.to_not be_include position(start_width+1,-1) }
+    it { is_expected.to_not be_include position(-1,start_height+1) }
+    it { is_expected.to_not be_include position(-1,1) }
+    it { is_expected.to_not be_include position(start_width+1,start_height+1) }
+    it { is_expected.to_not be_include position(start_width+1,-1) }
+    it { is_expected.to_not be_include position(-1,start_height+1) }
+  end
+
+  private
+
+  def position(x,y)
+    Rover::Position.new(x,y,Rover::Position::DIRECTIONS.sample)
+  end
+end
