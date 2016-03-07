@@ -55,9 +55,9 @@ class Rover < Struct.new(:position, :platenau, :path)
     end
   end
 
-  class Platenau < Struct.new(:width, :height)
+  class Platenau < Struct.new(:max_width, :max_height)
     def include?(point)
-      point.x >= 0 && point.y >= 0 && point.x < width && point.y < height
+      point.x >= 0 && point.y >= 0 && point.x <= max_width && point.y <= max_height
     end
   end
 

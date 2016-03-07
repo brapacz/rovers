@@ -131,15 +131,15 @@ end
 describe Rover::Platenau do
   subject { platenau }
 
-  let(:start_width)  { 5 }
-  let(:start_height) { 5 }
+  let(:start_width)  { rand 3..10 }
+  let(:start_height) { rand 3..10 }
   let(:platenau)     { described_class.new(start_width, start_height)}
 
   describe '#include?' do
     it { is_expected.to be_include position(1, 1) }
     it { is_expected.to be_include position(start_width-1, start_height-1) }
+    it { is_expected.to be_include position(start_width, start_height) }
 
-    it { is_expected.to_not be_include position(start_width, start_height) }
     it { is_expected.to_not be_include position(start_width+1,start_height+1) }
     it { is_expected.to_not be_include position(start_width+1,-1) }
     it { is_expected.to_not be_include position(-1,start_height+1) }
