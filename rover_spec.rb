@@ -156,7 +156,7 @@ describe Rover::Platenau do
   end
 end
 
-describe Rover do
+describe Rover::Vehicle do
   subject { rover }
 
   let(:rover)       { described_class.new(position, platenau, path) }

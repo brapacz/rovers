@@ -1,4 +1,4 @@
-class Rover < Struct.new(:position, :platenau, :path)
+module Rover
   class Position < Struct.new(:x, :y, :direction)
     NORTH = 'N'.freeze
     SOUTH = 'S'.freeze
@@ -61,26 +61,28 @@ class Rover < Struct.new(:position, :platenau, :path)
     end
   end
 
-  def move
-    path.each_char do |char|
-      case char
-      when TURN_LEFT
-        position.turn_left
-      when TURN_RIGHT
-        position.turn_right
-      when MOVE_FORWARD
-        position.move_forward
+  class Vehicle < Struct.new(:position, :platenau, :path)
+    def move
+      path.each_char do |char|
+        case char
+        when TURN_LEFT
+          position.turn_left
+        when TURN_RIGHT
+          position.turn_right
+        when MOVE_FORWARD
+          position.move_forward
+        end
       end
+      self
     end
-    self
-  end
 
-  def where
-    "#{position.x} #{position.y} #{position.direction}"
-  end
+    def where
+      "#{position.x} #{position.y} #{position.direction}"
+    end
 
-  TURN_LEFT    = 'L'.freeze
-  TURN_RIGHT   = 'R'.freeze
-  MOVE_FORWARD = 'M'.freeze
+    TURN_LEFT    = 'L'.freeze
+    TURN_RIGHT   = 'R'.freeze
+    MOVE_FORWARD = 'M'.freeze
+  end
 
 end
