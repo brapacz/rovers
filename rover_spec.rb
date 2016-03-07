@@ -1,5 +1,6 @@
 require 'rspec'
 require 'rspec/its'
+require 'byebug'
 
 require_relative 'rover'
 
@@ -156,21 +157,21 @@ describe Rover::Platenau do
 end
 
 describe Rover do
+  subject { rover }
+
   let(:rover)       { described_class.new(position, platenau, path) }
-  let(:position)    { double(:position, x: start_x, y: start_y, direction: direction) }
+  let(:position)    { Rover::Position.new(start_x, start_y, start_dir) }
   let(:start_x)     { (1...width).to_a.sample }
   let(:start_y)     { (1...height).to_a.sample }
-  let(:direction)   { Rover::Position::NORTH }
+  let(:start_dir)   { Rover::Position::NORTH }
   let(:width)       { 5 }
   let(:height)      { 5 }
-  let(:platenau)    { double(:platenau, include?: is_included) }
+  let(:platenau)    { Rover::Platenau.new(width, height) }
   let(:is_included) { true }
   let(:path)        { 'LML' }
 
   describe '#move' do
     before { rover.move }
-    its(:x) { is_expected.to be_eql start_x-1 }
-    its(:y) { is_expected.to be_eql start_y }
-    it      { is_expected.to be_south }
+    its(:where) { is_expected.to be_eql "#{start_x-1} #{start_y} S" }
   end
 end
