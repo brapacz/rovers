@@ -1,4 +1,6 @@
 module Rover
+  class Error < StandardError; end
+
   class Position < Struct.new(:x, :y, :direction)
     NORTH = 'N'.freeze
     SOUTH = 'S'.freeze
@@ -47,6 +49,12 @@ module Rover
       self
     end
 
+    def self.build(input)
+      match = /^(\d)+ (\d) ([NSWE])$/.match(input)
+      raise StandardError, 'wrong input format' unless match
+      new(*match.to_a.drop(1).map { |value| /^\d+$/ =~ value ? value.to_i : value })
+    end
+
     private
 
     def turn(index)
@@ -58,6 +66,12 @@ module Rover
   class Platenau < Struct.new(:max_width, :max_height)
     def include?(point)
       point.x >= 0 && point.y >= 0 && point.x <= max_width && point.y <= max_height
+    end
+
+    def self.build(input)
+      match = /^(\d)+ (\d)+$/.match(input)
+      raise StandardError, 'wrong input format' unless match
+      new(*match.to_a.drop(1).map { |value| /^\d+$/ =~ value ? value.to_i : value })
     end
   end
 
@@ -85,4 +99,32 @@ module Rover
     MOVE_FORWARD = 'M'.freeze
   end
 
+  class Parser < Struct.new(:input)
+    def parse
+      lines    = input.split("\n")
+      platenau = Platenau.build(lines.shift)
+      vehicles = []
+      while lines.any?
+        position = Position.build(lines.shift)
+        path     = lines.shift
+        vehicles << Vehicle.new(position, platenau, path)
+      end
+      Container.new vehicles
+    end
+  end
+
+  class Container < Struct.new(:vehicles)
+    def move_all
+      vehicles.each(&:move)
+      self
+    end
+
+    def where
+      vehicles.map(&:where).join("\n")
+    end
+  end
+
+  def self.calculate(input)
+    Parser.new(input).parse.move_all.where
+  end
 end
