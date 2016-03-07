@@ -49,10 +49,12 @@ module Rover
       self
     end
 
+    BUILD_REGEX = /^(\d)+ (\d) ([#{DIRECTIONS.join}])$/
     def self.build(input)
-      match = /^(\d)+ (\d) ([NSWE])$/.match(input)
+      match = BUILD_REGEX.match(input)
       raise StandardError, 'wrong input format' unless match
-      new(*match.to_a.drop(1).map { |value| /^\d+$/ =~ value ? value.to_i : value })
+      arguments = match.to_a.drop(1).map { |value| /^\d+$/ =~ value ? value.to_i : value }
+      new(*arguments)
     end
 
     private
@@ -68,10 +70,12 @@ module Rover
       point.x >= 0 && point.y >= 0 && point.x <= max_width && point.y <= max_height
     end
 
+    BUILD_REGEX = /^(\d)+ (\d)+$/
     def self.build(input)
-      match = /^(\d)+ (\d)+$/.match(input)
+      match = BUILD_REGEX.match(input)
       raise StandardError, 'wrong input format' unless match
-      new(*match.to_a.drop(1).map { |value| /^\d+$/ =~ value ? value.to_i : value })
+      arguments = match.to_a.drop(1).map { |value| /^\d+$/ =~ value ? value.to_i : value }
+      new(*arguments)
     end
   end
 
@@ -84,7 +88,7 @@ module Rover
         when TURN_RIGHT
           position.turn_right
         when MOVE_FORWARD
-          position.move_forward
+          move_forward
         end
       end
       self
@@ -97,6 +101,13 @@ module Rover
     TURN_LEFT    = 'L'.freeze
     TURN_RIGHT   = 'R'.freeze
     MOVE_FORWARD = 'M'.freeze
+
+    private
+
+    def move_forward
+      position.move_forward
+      raise Error, 'fell from the platenau' unless platenau.include? position
+    end
   end
 
   class Parser < Struct.new(:input)

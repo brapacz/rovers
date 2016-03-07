@@ -173,24 +173,31 @@ describe Rover::Vehicle do
   its(:where) { is_expected.to be_eql "#{position.x} #{position.y} #{position.direction}" }
 
   describe '#move' do
-    before { rover.move }
+    context 'after call' do
+      before { rover.move }
 
-    context 'when robot start on 1 2 N and path is LMLMLMLMM' do
-      let(:path)      { 'LMLMLMLMM' }
-      let(:start_x)   { 1 }
-      let(:start_y)   { 2 }
-      let(:start_dir) { 'N' }
+      context 'when robot start on 1 2 N and path is LMLMLMLMM' do
+        let(:path)      { 'LMLMLMLMM' }
+        let(:start_x)   { 1 }
+        let(:start_y)   { 2 }
+        let(:start_dir) { 'N' }
 
-      its(:where) { is_expected.to be_eql '1 3 N' }
+        its(:where) { is_expected.to be_eql '1 3 N' }
+      end
+
+      context 'when robot start on 3 3 E and path is MMRMMRMRRM' do
+        let(:path)      { 'MMRMMRMRRM' }
+        let(:start_x)   { 3 }
+        let(:start_y)   { 3 }
+        let(:start_dir) { 'E' }
+
+        its(:where) { is_expected.to be_eql '5 1 E' }
+      end
     end
 
-    context 'when robot start on 3 3 E and path is MMRMMRMRRM' do
-      let(:path)      { 'MMRMMRMRRM' }
-      let(:start_x)   { 3 }
-      let(:start_y)   { 3 }
-      let(:start_dir) { 'E' }
-
-      its(:where) { is_expected.to be_eql '5 1 E' }
+    context 'when moving outside platenau' do
+      let(:path) { 'MMMMMMMMMMMMMM' }
+      it { expect { rover.move }.to raise_error Rover::Error, 'fell from the platenau' }
     end
   end
 end
