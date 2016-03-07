@@ -194,3 +194,11 @@ describe Rover::Vehicle do
     end
   end
 end
+
+describe Rover do
+  describe '.calculate' do
+    subject { described_class.calculate(input) }
+    let(:input) { "5 5\n1 2 N\nLMLMLMLMM\n3 3 E\nMMRMMRMRRM\n" }
+    it { is_expected.to be_eql "1 3 N\n5 1 E\n" }
+  end
+end
